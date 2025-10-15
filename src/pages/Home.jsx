@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function HomePage(){
     const [username, setUsername] = useState("");
-    // const nav = useNavigate();
+    const nav = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,7 +14,7 @@ export default function HomePage(){
             });
 
             const player = res.data;
-            // console.log(player)
+            nav(`/profile/${player._id}`);
         } catch (err) {
             console.error(err);
         }
