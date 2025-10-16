@@ -14,12 +14,12 @@ function App() {
         <Link to="/">Home</Link>
         <Link to="/leaderboard">Leaderboard</Link>
         <Link to="/register">Register</Link>
-        <Link to="login">Login</Link>
+        <Link to="/login">Login</Link>
         <Link to="/profile">Profile</Link>
       </nav>
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='register' element={<RegisterPage />} />
+        <Route path='/register' element={<RegisterPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/leaderboard' element={<LeaderboardPage />} />
         <Route path='/profile/:id' element={<ProfilePage />} />
