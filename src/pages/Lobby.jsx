@@ -5,6 +5,7 @@ import axios from "axios";
 export default function LobbyPage(){
     const [player, setPlayer] = useState(null);
     const [games, setGames] = useState([]);
+    const [gameName, setGameName] = useState("");
     const nav = useNavigate();
 
     // get and setting player data
@@ -30,6 +31,20 @@ export default function LobbyPage(){
     };
 
     // Create Game logic
+    const handleCreateGame = async (e) => {
+        e.preventDefault();
+        console.log(player)
+        try {
+            const res = await axios.post("http://localhost:3000/api/games", {
+                host: player._id,
+                name: gameName,
+            });
+            // Navigate to game page by id
+        } catch (err) {
+            console.error(err);
+            alert("Error creating game");
+        }
+    }
     
     return (
         <div className="lobby-page">
@@ -51,10 +66,9 @@ export default function LobbyPage(){
                     </ul>
                 </div>  
                 <h2>Create a game lobby</h2>
-                <form className="create-game-form">
-                    <input />
-                    <input />
-                    <button>Create</button>
+                <form onSubmit={handleCreateGame} className="create-game-form">
+                    <input type="text" placeholder="Game Name" value={gameName} onChange={(e) => setGameName(e.target.value)} required />
+                    <button type="submit">Create</button>
                 </form>
             </div>
         </div>
