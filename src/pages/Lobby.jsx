@@ -1,12 +1,53 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 export default function LobbyPage(){
+    const [player, setPlayer] = useState(null);
+    const [games, setGames] = useState([]);
+    const nav = useNavigate();
+
+    // get and setting player data
+    useEffect(() => {
+        const storedPlayer = JSON.parse(localStorage.getItem("player"));
+        if(!storedPlayer){
+            alert("You must be logged in first");
+            nav("/login")
+        } else {
+            setPlayer(storedPlayer);
+            getGames();
+        }
+    }, [nav]);
+
+    // Get games player can join
+    const getGames = async () => {
+        try {
+            const res = await axios.get("http://localhost:3000/api/games/waiting");
+            setGames(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Create Game logic
+    
     return (
         <div className="lobby-page">
-            <h1>Find a Game or Create one</h1>
-
+            <h1>Welcome to the Lobby, {player?.username}</h1>
             <div className="lobby-container">
                 <div className="join-lobby-container">
+                    <h2>Available Games</h2>
                     <ul>
-                        <li>games in waiting status here</li>
+                        {games.length > 0 ? (
+                            games.map((g) => (
+                                <li key={g._id}>
+                                    {g.name} - Host: {g.host.username}
+                                    <button onClick={() => nav(`/game/${g._id}`)}>Join</button>
+                                </li>
+                            ))
+                        ) : (
+                            <p>No games available</p>
+                        )}
                     </ul>
                 </div>  
                 <h2>Create a game lobby</h2>
@@ -16,8 +57,6 @@ export default function LobbyPage(){
                     <button>Create</button>
                 </form>
             </div>
-            
-           
         </div>
     )
 }
