@@ -11,9 +11,17 @@ export default function ProfilePage(){
     const nav = useNavigate();
 
     useEffect(() => {
+        const storedPlayer = JSON.parse(localStorage.getItem("player"));
+        if(!storedPlayer || storedPlayer._id !== id){
+            alert("No player data found")
+            nav("/login"); 
+        }
+
+        const playerId = id || storedPlayer._id;
+
         const getPlayer = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/players/${id}`);
+                const res = await axios.get(`http://localhost:3000/api/players/${playerId}`);
                 setPlayer(res.data);
                 setUsername(res.data.username);
             } catch (err) {
@@ -21,7 +29,7 @@ export default function ProfilePage(){
             }
         };
         getPlayer();
-    }, [id]);
+    }, [id, nav]);
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -30,6 +38,7 @@ export default function ProfilePage(){
             username,
            });
            setPlayer(res.data);
+           localStorage.setItem("player", JSON.stringify(res.data));
            setIsEditing(false);
         } catch (err) {
             console.error("Error updating player:", err);
@@ -39,11 +48,17 @@ export default function ProfilePage(){
     const handleDelete = async () => {
         try {
             await axios.delete(`http://localhost:3000/api/players/${id}`)
+            localStorage.removeItem("player"); // clear from storage
             nav("/"); // Go back Home
         } catch (err) {
             console.error(err);
         }
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("player");
+        nav("/");
+    }
 
     if(!player) return <p>Loading...</p>
 
@@ -56,6 +71,7 @@ export default function ProfilePage(){
                 <p>Score: {player.score}</p>
                 <button onClick={() => setIsEditing(true)}>Edit</button>
                 <button onClick={handleDelete}>Delete Profile</button>
+                <button onClick={handleLogout}>Logout</button>
             </div>
             ) : (
                <form onSubmit={handleUpdate}>
@@ -64,6 +80,8 @@ export default function ProfilePage(){
                     <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
                </form>
             )}
+            <p>Play!</p>
+            <button onClick={() => nav("/lobby")}>Lobby</button>
         </div>
     )
 }

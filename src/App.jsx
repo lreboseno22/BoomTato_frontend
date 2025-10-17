@@ -5,22 +5,19 @@ import LeaderboardPage from './pages/Leaderboard';
 import ProfilePage from './pages/Profile';
 import RegisterPage from './pages/Register';
 import LoginPage from './pages/Login';
+import LobbyPage from './pages/Lobby';
+import Navbar from './components/Navbar';
 
 function App() {
 
   return (
     <div>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/leaderboard">Leaderboard</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/profile">Profile</Link>
-      </nav>
+      <Navbar />
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/lobby' element={<LobbyPage />} />
         <Route path='/leaderboard' element={<LeaderboardPage />} />
         <Route path='/profile/:id' element={<ProfilePage />} />
       </Routes>

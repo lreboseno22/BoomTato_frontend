@@ -1,11 +1,18 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage(){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const nav = useNavigate();
+
+    useEffect(() => {
+        const storedPlayer = JSON.parse(localStorage.getItem("player"));
+        if(storedPlayer){
+            nav(`/profile/${storedPlayer._id}`);
+        }
+    }, [nav]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -15,6 +22,7 @@ export default function LoginPage(){
                 password,
             });
             const player = res.data;
+            localStorage.setItem("player", JSON.stringify(player)); // save player info
             nav(`/profile/${player._id}`);
         } catch (err) {
             console.error(err);
