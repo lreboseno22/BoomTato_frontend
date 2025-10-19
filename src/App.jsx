@@ -7,6 +7,7 @@ import RegisterPage from './pages/Register';
 import LoginPage from './pages/Login';
 import LobbyPage from './pages/Lobby';
 import Navbar from './components/Navbar';
+import GamePage from './pages/Game';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path='/lobby' element={<LobbyPage />} />
         <Route path='/leaderboard' element={<LeaderboardPage />} />
         <Route path='/profile/:id' element={<ProfilePage />} />
+        <Route path='/game/:id' element={<GamePage />} />
       </Routes>
     </div>
   )
