@@ -39,7 +39,7 @@ export default function LobbyPage(){
                 host: player._id,
                 name: gameName,
             });
-            // Navigate to game page by id
+            nav(`/game/${res.data._id}`);
         } catch (err) {
             console.error(err);
             alert("Error creating game");
