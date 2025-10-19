@@ -24,11 +24,20 @@ export default function GamePage(){
     }
 
     const handleLeaveGame = async () => {
-        // leave game logic
-    }
+        if(!player) return alert("You must be logged in");
+        try {
+            await axios.patch(`http://localhost:3000/api/games/${id}/leave`, {
+                playerId: player._id,
+            });
+            nav("/lobby")
+        } catch (err) {
+            console.error(err);
+            alert("Error Leaving Game");
+        }
+    };
 
     const handleEndGame = async () => {
-        if(!player) return alert ("You must be logged in");
+        if(!player) return alert("You must be logged in");
         const confirmEnd = window.confirm("Are you sure you want to end this game?");
         if(!confirmEnd) return;
 
