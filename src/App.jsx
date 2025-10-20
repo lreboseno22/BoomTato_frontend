@@ -8,6 +8,7 @@ import LoginPage from './pages/Login';
 import LobbyPage from './pages/Lobby';
 import Navbar from './components/Navbar';
 import GamePage from './pages/Game';
+import KaboomCanvas from './pages/KaboomCanvas';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path='/leaderboard' element={<LeaderboardPage />} />
         <Route path='/profile/:id' element={<ProfilePage />} />
         <Route path='/game/:id' element={<GamePage />} />
+        <Route path='/play/:id' element={<KaboomCanvas />} />
       </Routes>
     </div>
   )
