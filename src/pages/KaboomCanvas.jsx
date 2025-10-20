@@ -1,9 +1,11 @@
 import kaboom from "kaboom";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 export default function KaboomCanvas(){
     const { id } = useParams();
+    const location = useLocation();
+    const initialState = location.state?.initialState;
 
     useEffect(() => {
         // initialize kaboom canvas
@@ -23,7 +25,7 @@ export default function KaboomCanvas(){
             document.getElementById("kaboomCanvas")?.remove();
         }
         
-    }, [id]);
+    }, [id, initialState]);
 
     return (
         <div className="kaboom-page">

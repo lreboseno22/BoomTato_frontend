@@ -13,9 +13,9 @@ export default function GamePage(){
         socket.emit("joinGameRoom", id);
         
         // listener
-        socket.on("gameStarted", (gameId) => {
-            console.log("Game Started:", gameId);
-            nav(`/play/${gameId}`)
+        socket.on("gameStarted", ({ gameId, initialState }) => {
+            console.log("Game Started:", gameId, initialState);
+            nav(`/play/${gameId}`, { state: { initialState } });
         });
 
         return () => {
@@ -66,7 +66,7 @@ export default function GamePage(){
         if(!confirmEnd) return;
 
         try {
-            await axios.delete(`http://localhost:3000/api/games/${id}`);
+            await axios.delete(`http://localhost:3000/api/games/${id}/end`);
             nav("/lobby");
         } catch (err) {
             console.error(err);
