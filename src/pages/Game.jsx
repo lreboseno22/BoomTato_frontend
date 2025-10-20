@@ -1,12 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import socket from "../socket.js";
 
 export default function GamePage(){
     const { id } = useParams();
     const [game, setGame] = useState(null);
     const [player, setPlayer] = useState(null);
     const nav = useNavigate();
+
+    useEffect(() => {
+        socket.emit("joinGameRoom", id);
+        
+        // listener
+        socket.on("gameStarted", (gameId) => {
+            console.log("Game Started:", gameId);
+            nav(`/play/${gameId}`)
+        });
+
+        return () => {
+            socket.off("gameStarted");
+        };
+    }, [id, nav]);
 
     useEffect(() => {
         const storedPlayer = JSON.parse(localStorage.getItem("player"));
@@ -26,7 +41,7 @@ export default function GamePage(){
     const handleStartGame = async () => {
         try {
             await axios.put(`http://localhost:3000/api/games/${id}/start`);
-            nav(`/play/${id}`); // KABOOM CANVAS
+            socket.emit("startGame", id);
         } catch (err) {
             console.error(err);
         }
@@ -65,7 +80,7 @@ export default function GamePage(){
 
     return (
         <div className="game-page">
-            <h1>{game.gameName}</h1>
+            <h1>{game.name}</h1>
             <p>Status: {game.status}</p>
             <h3>Players:</h3>
             <ul>

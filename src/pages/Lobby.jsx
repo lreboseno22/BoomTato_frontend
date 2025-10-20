@@ -45,6 +45,19 @@ export default function LobbyPage(){
             alert("Error creating game");
         }
     }
+
+    const handleJoinGame = async (gameId) => {
+        if(!player) return alert("You must be logged in to join a game");
+
+        try {
+            await axios.patch(`http://localhost:3000/api/games/${gameId}/join`, {
+                playerId: player._id,
+            });
+            nav(`/game/${gameId}`);
+        } catch (err) {
+            console.error(err);
+        }
+    }
     
     return (
         <div className="lobby-page">
@@ -57,7 +70,7 @@ export default function LobbyPage(){
                             games.map((g) => (
                                 <li key={g._id}>
                                     {g.name} - Host: {g.host.username}
-                                    <button onClick={() => nav(`/game/${g._id}`)}>Join</button>
+                                    <button onClick={() => handleJoinGame(g._id)}>Join</button>
                                 </li>
                             ))
                         ) : (
