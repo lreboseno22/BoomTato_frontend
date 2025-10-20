@@ -23,6 +23,15 @@ export default function GamePage(){
         }
     }
 
+    const handleStartGame = async () => {
+        try {
+            await axios.put(`http://localhost:3000/api/games/${id}/start`);
+            nav(`/play/${id}`); // KABOOM CANVAS
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     const handleLeaveGame = async () => {
         if(!player) return alert("You must be logged in");
         try {
@@ -70,6 +79,10 @@ export default function GamePage(){
                     <button onClick={handleEndGame}>End Game</button>
                 ) : (
                     <button onClick={handleLeaveGame}>Leave Game</button>
+                )}
+
+                {isHost && game.status === "waiting" && game.players.length >=2 && (
+                    <button onClick={handleStartGame}>Start Game</button>
                 )}
             </div>
         </div>
