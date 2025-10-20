@@ -4,7 +4,8 @@ import { useParams, useLocation } from "react-router-dom";
 import socket from "../socket";
 
 export default function KaboomCanvas(){
-    const { id: gameId } = useParams();
+    const { id } = useParams();
+    const gameId = String(id); // ensure gameId is string and not a state obj
     const location = useLocation();
     const initialState = location.state?.initialState;
     const storedPlayer = JSON.parse(localStorage.getItem("player"));
@@ -29,6 +30,8 @@ export default function KaboomCanvas(){
 
         kRef.current = k; // store the kaboom instance for later
 
+        socket.emit("joinGameRoom", gameId);
+
         // Spawn player sprites based on the initial game state
         if(initialState?.players){
             Object.entries(initialState.players).forEach(([id, pos]) => {
@@ -51,20 +54,19 @@ export default function KaboomCanvas(){
         // Listen for key presses for movement
         Object.entries(controls).forEach(([dir, key]) => {
             k.onKeyDown(key, () => {
-                console.log(`Pressed ${dir}`);
                 socket.emit("playerMove", { gameId, playerId, direction: dir }); // emit movement to server
             })
         })
 
         // Listen for server state updates
-        socket.on("stateUpdate", (newState) => {
+        socket.on("stateUpdated", (newState) => {
             // Update the position of all player sprites based on the latest state
             Object.entries(newState.players).forEach(([id, pos]) => {
                 const sprite = playerSprites.current[id];
-                if(sprite) sprite.pos = k.vec2(pos.x, pos.y); // move sprite to new position
+                if(sprite) sprite.moveTo(pos.x, pos.y); // move sprite to new position
             })
-        })
-        
+        });
+
         return () => {
             socket.off("stateUpdated");
             document.getElementById("kaboomCanvas")?.remove();
