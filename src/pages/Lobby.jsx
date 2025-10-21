@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import socket from "../socket";
 
 export default function LobbyPage(){
     const [player, setPlayer] = useState(null);
@@ -16,15 +17,30 @@ export default function LobbyPage(){
             nav("/login")
         } else {
             setPlayer(storedPlayer);
-            getGames();
+            getGames(); //inital fetch
         }
     }, [nav]);
+
+    useEffect(() => {
+        socket.on("lobbyUpdate", (newGame) => {
+            setGames((prevGames) => [...(prevGames || []), newGame]);
+        });
+
+        socket.on("gameCreated", (game) => {
+            nav(`/game/${game._id}`);
+        })
+
+        return () => {
+            socket.off("lobbyUpdate");
+            socket.off("gameCreated");
+        }
+    }, []);
 
     // Get games player can join
     const getGames = async () => {
         try {
             const res = await axios.get("http://localhost:3000/api/games/waiting");
-            setGames(res.data);
+            setGames(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error(err);
         }
@@ -33,17 +49,11 @@ export default function LobbyPage(){
     // Create Game logic
     const handleCreateGame = async (e) => {
         e.preventDefault();
-        console.log(player)
-        try {
-            const res = await axios.post("http://localhost:3000/api/games", {
-                host: player._id,
-                name: gameName,
-            });
-            nav(`/game/${res.data._id}`);
-        } catch (err) {
-            console.error(err);
-            alert("Error creating game");
-        }
+        if(!player) return;
+
+        const gameData = { host: player._id, name: gameName };
+
+        socket.emit("createGame", gameData);
     }
 
     const handleJoinGame = async (gameId) => {
