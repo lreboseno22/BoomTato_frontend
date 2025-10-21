@@ -14,12 +14,13 @@ export default function KaboomCanvas() {
 
   // Ensure canvas can capture keyboard input
   useEffect(() => {
+    if(kRef.current){
+        console.log("[CLIENT] Kaboom already initialized")
+        return;
+    }
     const canvas = document.getElementById("kaboomCanvas");
     canvas?.focus(); // focus the canvas for key events/inputs
-  }, []);
 
-  // initialize kaboom canvas
-  useEffect(() => {
     const k = kaboom({
       width: 800,
       height: 600,
@@ -29,25 +30,34 @@ export default function KaboomCanvas() {
     });
 
     kRef.current = k;
+    console.log("[CLIENT] Kaboom initialized");
 
-    // clean up
     return () => {
-      if (kRef.current) {
-        try {
-          kRef.current.paused = true;
-          kRef.current.scene = null;
-        } catch (e) {
-          console.warn("Kaboom cleanup warning:", e);
-        }
-        kRef.current = null;
-      }
+        console.log("[CLIENT] Kaboom cleanup skipped (StrictMode safe)");
     };
+
   }, []);
 
   useEffect(() => {
-    if (!playerId || !gameId) return;
     const k = kRef.current;
-    if (!k) return;
+    if (!playerId || !gameId || !kRef.current) return;
+
+    const renderPlayers = (state) => {
+        if (!state || !state.players) return;
+      console.log("[CLIENT] Rendering players:", state.players);
+
+      Object.entries(state.players).forEach(([id, pos]) => {
+        if (!playerSprites.current[id]) {
+          playerSprites.current[id] = k.add([
+            k.rect(32, 32),
+            k.pos(pos.x, pos.y),
+            k.color(id === playerId ? k.rgb(0, 255, 0) : k.rgb(255, 255, 255)),
+          ]);
+        } else {
+          playerSprites.current[id].moveTo(pos.x, pos.y);
+        }
+      });
+    }
 
     const registerAndJoin = () => {
       if (!socket.connected || !playerId) return;
@@ -61,25 +71,10 @@ export default function KaboomCanvas() {
       // Request current game state from server after joining
       socket.emit("requestCurrentState", gameId, (state) => {
         console.log("[CLIENT] Received current state:", state);
-        if (!state || !state.players) return;
-
-        Object.entries(state.players).forEach(([id, pos]) => {
-          if (!playerSprites.current[id]) {
-            playerSprites.current[id] = k.add([
-              k.rect(32, 32),
-              k.pos(pos.x, pos.y),
-              k.color(
-                id === playerId ? k.rgb(0, 255, 0) : k.rgb(255, 255, 255)
-              ),
-            ]);
-          } else {
-            playerSprites.current[id].moveTo(pos.x, pos.y);
-          }
-        });
+        renderPlayers(state);
       });
     };
 
-    // Run immediately and also when reconnecting
     registerAndJoin();
     socket.on("connect", registerAndJoin);
 
@@ -92,30 +87,12 @@ export default function KaboomCanvas() {
     });
 
     // Listen for state updates
-    const handleStateUpdate = (newState) => {
-      if (!kRef.current) return;
+    const handleStateUpdate = (newState) => renderPlayers(newState);
 
-    //     console.log("[CLIENT] State update received:", newState);
-
-      Object.entries(newState.players).forEach(([id, pos]) => {
-        let sprite = playerSprites.current[id];
-
-        if (!sprite) {
-          sprite = kRef.current.add([
-            kRef.current.rect(32, 32),
-            kRef.current.pos(pos.x, pos.y),
-            kRef.current.color(
-              id === playerId
-                ? kRef.current.rgb(0, 255, 0)
-                : kRef.current.rgb(255, 255, 255)
-            ),
-          ]);
-          playerSprites.current[id] = sprite;
-        } else {
-            sprite.moveTo(pos.x, pos.y);
-        }
-      });
-    };
+    const handleGameStarted = ({ gameId, gameState }) => {
+        console.log("[CLIENT] Game started event received");
+        renderPlayers(gameState);
+    }
 
     const handleGameEnded = ({ winner, loser }) => {
         alert(`Game ended! Winner: ${winner} and Loser: ${loser}`);
@@ -123,12 +100,21 @@ export default function KaboomCanvas() {
     }
 
     socket.on("stateUpdated", handleStateUpdate);
+    socket.on("gameStarted", handleGameStarted);
     socket.on("gameEnded", handleGameEnded);
+
+    setTimeout(() => {
+      socket.emit("requestCurrentState", gameId, (state) => {
+        console.log("[CLIENT] Post-start sync:", state);
+        renderPlayers(state);
+      });
+    }, 1000);
 
     // Cleanup listeners
     return () => {
       socket.off("connect", registerAndJoin);
       socket.off("stateUpdated", handleStateUpdate);
+      socket.off("gameStarted", handleGameStarted)
       socket.off("gameEnded", handleGameEnded);
     };
   }, [gameId, playerId]);
