@@ -94,9 +94,24 @@ export default function KaboomCanvas() {
         renderPlayers(gameState);
     }
 
-    const handleGameEnded = ({ winner, loser }) => {
+    const handleGameEnded = async ({ winner, loser, gameId }) => {
         alert(`Game ended! Winner: ${winner} and Loser: ${loser}`);
-        nav("/lobby");
+
+        try {
+        // Update MongoDB status
+        const res = await fetch(`http://localhost:3000/api/games/${gameId}/end`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        });
+
+        if (!res.ok) throw new Error("Failed to update game status");
+
+        console.log(`[CLIENT] Game ${gameId} status updated to finished`);
+        } catch (err) {
+            console.error(err)
+        } finally {
+            nav("/lobby");
+        }
     }
 
     socket.on("stateUpdated", handleStateUpdate);
