@@ -1,6 +1,6 @@
 import kaboom from "kaboom";
 import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import socket from "../socket";
 
 export default function KaboomCanvas() {
@@ -10,6 +10,7 @@ export default function KaboomCanvas() {
   const playerId = storedPlayer?._id;
   const kRef = useRef(null); // Ref to store Kaboom instance
   const playerSprites = useRef({}); // Ref to store each player's sprite by their ID
+  const nav = useNavigate();
 
   // Ensure canvas can capture keyboard input
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function KaboomCanvas() {
     const handleStateUpdate = (newState) => {
       if (!kRef.current) return;
 
-      console.log("[CLIENT] State update received:", newState);
+    //     console.log("[CLIENT] State update received:", newState);
 
       Object.entries(newState.players).forEach(([id, pos]) => {
         let sprite = playerSprites.current[id];
@@ -116,12 +117,19 @@ export default function KaboomCanvas() {
       });
     };
 
+    const handleGameEnded = ({ winner, loser }) => {
+        alert(`Game ended! Winner: ${winner} and Loser: ${loser}`);
+        nav("/lobby");
+    }
+
     socket.on("stateUpdated", handleStateUpdate);
+    socket.on("gameEnded", handleGameEnded);
 
     // Cleanup listeners
     return () => {
       socket.off("connect", registerAndJoin);
       socket.off("stateUpdated", handleStateUpdate);
+      socket.off("gameEnded", handleGameEnded);
     };
   }, [gameId, playerId]);
 
