@@ -5,7 +5,7 @@ import socket from "../socket.js";
 
 export default function GamePage(){
     const { id } = useParams();
-    const [game, setGame] = useState(null);
+    const [game, setGame] = useState({ players: [] }); // make sure players is always an array in init game state
     const [player, setPlayer] = useState(null);
     const nav = useNavigate();
 
@@ -23,6 +23,38 @@ export default function GamePage(){
         };
     }, [id, nav]);
 
+    // runs whenever game or player state changes to ensure prevents host from disappearing from players list
+    useEffect(() => {
+    if (game && player) {
+    // Ensure the host is in the players list
+    const playersArray = Array.isArray(game.players) ? game.players : [];
+    if (!playersArray.find((p) => p._id === player._id)) {
+      setGame((prev) => ({
+        ...prev,
+        players: [...prev.players, { _id: player._id, username: player.username }],
+      }));
+    }
+  }
+}, [game, player]);
+
+    // listens for "playerJoined" event from the server = no need for refresh to see player who joined
+    useEffect(() => {
+        socket.on("playerJoined", ({ gameId, gameState }) => {
+            if(gameId === id){
+               setGame((prevGame) => ({
+                    ...prevGame,
+                    players: Array.isArray(gameState.players)
+                    ? [...prevGame.players.filter(p => !gameState.players.some(np => np._id === p._id)), ...gameState.players]
+                : prevGame.players,
+            }));
+            }
+        })
+
+        return () => {
+            socket.off("playerJoined");
+        }
+    }, [id]);
+
     useEffect(() => {
         const storedPlayer = JSON.parse(localStorage.getItem("player"));
         if(storedPlayer) setPlayer(storedPlayer);
@@ -32,7 +64,10 @@ export default function GamePage(){
     const getGame = async () => {
         try {
             const res = await axios.get(`http://localhost:3000/api/games/${id}`);
-            setGame(res.data);
+            setGame({
+                ...res.data,
+                players: Array.isArray(res.data.players) ? res.data.players : [],
+            });
         } catch (err) {
             console.error(err);
         }
@@ -84,7 +119,7 @@ export default function GamePage(){
             <p>Status: {game.status}</p>
             <h3>Players:</h3>
             <ul>
-                {game.players.map((p) => (
+                {Array.isArray(game.players) && game.players.map((p) => (
                     <li key={p._id}>{p.username}</li>
                 ))}
             </ul>
