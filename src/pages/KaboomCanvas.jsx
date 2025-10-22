@@ -71,8 +71,14 @@ export default function KaboomCanvas() {
             k.pos(pos.x, pos.y),
             k.color(id === playerId ? k.rgb(0, 255, 0) : k.rgb(255, 255, 255)),
           ]);
+          
+          playerSprites.current[id].bombIcon = null;
         } else {
           playerSprites.current[id].moveTo(pos.x, pos.y);
+        }
+
+        if(playerSprites.current[id].bombIcon){
+          playerSprites.current[id].bombIcon.pos = k.vec2(pos.x, pos.y - 40)
         }
       });
     }
@@ -121,6 +127,24 @@ export default function KaboomCanvas() {
       }
 
       timerRef.current.text = `💣 ${secondsLeft}s`
+
+      Object.values(playerSprites.current).forEach(sprite => {
+        if(sprite.bombIcon){
+          sprite.bombIcon.destroy();
+          sprite.bombIcon = null;
+        }
+      });
+
+      const holderSprite = playerSprites.current[potatoHolder];
+      if(holderSprite){
+        holderSprite.bombIcon = k.add([
+          k.text("🥔", { size: 24 }),
+          k.pos(holderSprite.pos.x, holderSprite.pos.y - 40),
+          k.anchor("center"),
+          k.z(100),
+        ]);
+      }
+
     }
 
     const handleGameStarted = ({ gameId, gameState }) => {
