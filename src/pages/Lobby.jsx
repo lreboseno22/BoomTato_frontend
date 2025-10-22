@@ -63,6 +63,9 @@ export default function LobbyPage(){
             await axios.patch(`http://localhost:3000/api/games/${gameId}/join`, {
                 playerId: player._id,
             });
+            socket.emit("joinGameRoom", gameId );
+            socket.emit("playerHasJoined", gameId );
+
             nav(`/game/${gameId}`);
         } catch (err) {
             console.error(err);
