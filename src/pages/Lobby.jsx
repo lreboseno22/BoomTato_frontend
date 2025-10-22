@@ -82,7 +82,7 @@ export default function LobbyPage(){
                         {games.length > 0 ? (
                             games.map((g) => (
                                 <li key={g._id}>
-                                    {g.name} - Host: {g.host.username}
+                                    {g.name}
                                     <button onClick={() => handleJoinGame(g._id)}>Join</button>
                                 </li>
                             ))

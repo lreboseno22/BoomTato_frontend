@@ -101,7 +101,7 @@ export default function GamePage(){
         if(!confirmEnd) return;
 
         try {
-            await axios.delete(`http://localhost:3000/api/games/${id}/end`);
+            await axios.delete(`http://localhost:3000/api/games/${id}`);
             nav("/lobby");
         } catch (err) {
             console.error(err);
