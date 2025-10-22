@@ -10,6 +10,7 @@ export default function KaboomCanvas() {
   const playerId = storedPlayer?._id;
   const kRef = useRef(null); // Ref to store Kaboom instance
   const playerSprites = useRef({}); // Ref to store each player's sprite by their ID
+  const timerRef = useRef(null);
   const nav = useNavigate();
 
   // Ensure canvas can capture keyboard input
@@ -49,6 +50,15 @@ export default function KaboomCanvas() {
   useEffect(() => {
     const k = kRef.current;
     if (!playerId || !gameId || !kRef.current) return;
+
+    if(!timerRef.current){
+      timerRef.current = k.add([
+        k.text("💣 10s", { size: 32 }),
+        k.pos(k.width() / 2, 20),
+        k.anchor("top"),
+        k.z(50),
+      ]);
+    }
 
     const renderPlayers = (state) => {
         if (!state || !state.players) return;
@@ -97,6 +107,22 @@ export default function KaboomCanvas() {
     // Listen for state updates
     const handleStateUpdate = (newState) => renderPlayers(newState);
 
+    const handleTimerUpdate = ({ potatoTimer, potatoHolder }) => {
+      const POTATO_LIMIT = 10000;
+      const remaining = Math.max(0, POTATO_LIMIT - potatoTimer);
+      const secondsLeft = Math.ceil(remaining / 1000);
+
+      if(secondsLeft <= 3){
+        timerRef.current.color = k.rgb(255, 50, 50);
+      } else if (secondsLeft <= 6){
+        timerRef.current.color = k.rgb(255, 165, 0)
+      } else {
+        timerRef.current.color = k.rgb(255, 255, 255)
+      }
+
+      timerRef.current.text = `💣 ${secondsLeft}s`
+    }
+
     const handleGameStarted = ({ gameId, gameState }) => {
         console.log("[CLIENT] Game started event received");
         renderPlayers(gameState);
@@ -123,6 +149,7 @@ export default function KaboomCanvas() {
     }
 
     socket.on("stateUpdated", handleStateUpdate);
+    socket.on("timerUpdate", handleTimerUpdate);
     socket.on("gameStarted", handleGameStarted);
     socket.on("gameEnded", handleGameEnded);
 
@@ -137,6 +164,7 @@ export default function KaboomCanvas() {
     return () => {
       socket.off("connect", registerAndJoin);
       socket.off("stateUpdated", handleStateUpdate);
+      socket.off("timerUpdate", handleTimerUpdate);
       socket.off("gameStarted", handleGameStarted)
       socket.off("gameEnded", handleGameEnded);
     };
