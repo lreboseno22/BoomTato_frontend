@@ -1,0 +1,71 @@
+.startPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    background: linear-gradient(270deg, #eb7711, #db6511, #db530a);
+    overflow: hidden;
+}
+
+.gameTitle {
+    font-family: "Bangers", sans-serif;
+    letter-spacing: 1.2rem;
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 10rem;
+    text-shadow: 4px 4px 0 #ff3131, 8px 8px 0 #ffd700;
+}
+
+
+.container {
+    display: flex;
+    gap: 4rem;
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(234, 42, 8, 0.553);
+    backdrop-filter: blur(4px);
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.usernameSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.actionsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+
+.deleteModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 20, 20, 0.95);
+    border: 2px solid #ff3131;
+    border-radius: 12px;
+    padding: 2rem;
+    color: white;
+    z-index: 1000;
+    text-align: center;
+    box-shadow: 0 0 20px #ff3131;
+    width: 320px;
+}
+
+.confirm {
+    background: red;
+    color: white;
+}

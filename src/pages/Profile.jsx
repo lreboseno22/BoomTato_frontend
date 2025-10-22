@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import styles from "../styles/Start.module.css";
 
 export default function ProfilePage(){
     const { id } = useParams();
     const [player, setPlayer] = useState(null);
     const [username, setUsername] = useState("");
     const [isEditing, setIsEditing] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
 
     const nav = useNavigate();
 
@@ -46,6 +48,7 @@ export default function ProfilePage(){
     }
 
     const handleDelete = async () => {
+        if(!window.confirm("Are you sure you want to delete your profile?")) return;
         try {
             await axios.delete(`http://localhost:3000/api/players/${id}`)
             localStorage.removeItem("player"); // clear from storage
@@ -63,25 +66,56 @@ export default function ProfilePage(){
     if(!player) return <p>Loading...</p>
 
     return (
-        <div className="profile-page">
-            <h1>Player Profile</h1>
-            {!isEditing ? (
-            <div>
-                <h2>{player.username}</h2>
-                <p>Score: {player.score}</p>
-                <button onClick={() => setIsEditing(true)}>Edit</button>
-                <button onClick={handleDelete}>Delete Profile</button>
-                <button onClick={handleLogout}>Logout</button>
+        <div className={styles.startPage}>
+            <h1 className={styles.gameTitle}>BOOMTATO</h1>
+
+            <div className={styles.container}>
+                <div className={styles.userInfo}>
+                    {!isEditing ? (
+                        <div className={styles.usernameSection}>
+                            <h2>Welcome {player.username}</h2>
+                            <button className={styles.editBtn} onClick={() => setIsEditing(true)}>
+                                Edit
+                            </button>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleUpdate} className={styles.editForm}>
+                            <input 
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                            <button type="submit">Save</button>
+                            <button type="button" onClick={() => setIsEditing(false)}>
+                                Cancel
+                            </button>
+                        </form>
+                    )}
+
+                    {showDelete && (
+                        <div className={styles.deleteModal}> 
+                            <p>Are you sure you want to delete your profile?</p>
+                            <button className={styles.confirm} onClick={handleDelete}>
+                                Yes, delete my profile
+                            </button>
+                            <button onClick={() => setShowDelete(false)}>Cancel</button>
+                        </div>
+                    )}
+                </div>
+
+                <div className={styles.actionsContainer}>
+                    <button className={styles.playBtn} onClick={() => nav("/lobby")}>
+                        Play
+                    </button>
+                    <button className={styles.deleteBtn} onClick={() => setShowDelete(!showDelete)}>
+                        Delete Profile
+                    </button>
+                    <button className={styles.logoutBtn} onClick={handleLogout}>
+                        Logout
+                    </button>
+                </div>
             </div>
-            ) : (
-               <form onSubmit={handleUpdate}>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                    <button type="submit">Save</button>
-                    <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-               </form>
-            )}
-            <p>Play!</p>
-            <button onClick={() => nav("/lobby")}>Lobby</button>
         </div>
     )
 }
