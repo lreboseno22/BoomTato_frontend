@@ -37,6 +37,23 @@ export default function HomePage(){
     }
 
     // handle register
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post("http://localhost:3000/api/players/register", {
+                username,
+                password,
+            });
+
+            const player = res.data;
+            localStorage.setItem("player", JSON.stringify(player)); // save player info in local storage
+            console.log("Register response:", res.data);
+            nav(`/profile/${player._id}`);
+        } catch (err) {
+            console.error(err);
+            alert('Register Failed');
+        }
+    }
     
     return (
         <div className={styles.homePage}>
@@ -70,6 +87,35 @@ export default function HomePage(){
                         <p className={styles.text}>Don't have a player account?</p>
                         <button className={styles.switchBtn} onClick={() => { setShowLogin(false); setShowRegister(true); }}>
                             Register
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            { showRegister && (
+                <div className={styles.modalOverlay} onClick={() => setShowRegister(false)}>
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <h2>Register</h2>
+                        <form onSubmit={handleRegister} className={styles.form}>
+                            <input 
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                            <input 
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button type="submit" className={styles.modalBtn}>Create Player</button>
+                        </form>
+                        <p className={styles.text}>Already have a player account?</p>
+                        <button className={styles.switchBtn} onClick={() => { setShowRegister(false); setShowLogin(true); }}>
+                            Login
                         </button>
                     </div>
                 </div>
