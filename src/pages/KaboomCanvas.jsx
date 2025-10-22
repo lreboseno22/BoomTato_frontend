@@ -32,6 +32,14 @@ export default function KaboomCanvas() {
     kRef.current = k;
     console.log("[CLIENT] Kaboom initialized");
 
+    k.loadSprite("background", "/assets/otherbgimg.jpg");
+    k.add([
+      k.sprite("background"),
+      k.pos(0, 0),
+      k.scale(940 / 1000, 600 / 1000),
+      k.z(-1),
+    ]);
+
     return () => {
         console.log("[CLIENT] Kaboom cleanup skipped (StrictMode safe)");
     };
