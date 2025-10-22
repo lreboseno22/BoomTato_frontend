@@ -11,13 +11,14 @@
     justify-content: center;
     min-height: 100vh;
     background: linear-gradient(270deg, #ec9717, #f97316, #de550c);
-    font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .title {
+    font-family: "Bangers", sans-serif;
+    letter-spacing: 1.2rem;
     font-size: 5rem;
     font-weight: 800;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 3px 3px 0 #ff3131, 6px 6px 0 #ffd700;
     margin-bottom: 2rem;
 }
 
