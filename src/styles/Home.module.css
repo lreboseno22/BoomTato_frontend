@@ -20,15 +20,27 @@
     font-weight: 800;
     text-shadow: 3px 3px 0 #ff3131, 6px 6px 0 #ffd700;
     margin-bottom: 2rem;
+    animation: boomPop 2.5s ease-in-out infinite;
+}
+
+@keyframes boomPop {
+    0% { transform: scale(1) rotate(0deg); text-shadow: 3px 3px 0 #ff3131, 6px 6px 0 #ffd700; }
+    20% { transform: scale(1.1) rotate(-3deg); text-shadow: 5px 5px 15px #ff0000, 10px 10px 20px #ffd700; }
+    40% { transform: scale(0.9) rotate(3deg); }
+    60% { transform: scale(1.15) rotate(-2deg); }
+    80% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
 .btnsContainer {
     display: flex;
     gap: 1.5rem;
+    margin-top: 3rem;
 }
 
 .btn {
-    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    padding: 1.4rem 11rem;
     background-color: white;
     color: #ef4444;
     font-weight: bold;
