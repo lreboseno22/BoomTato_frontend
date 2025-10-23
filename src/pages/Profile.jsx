@@ -73,7 +73,7 @@ export default function ProfilePage(){
                 <div className={styles.userInfo}>
                     {!isEditing ? (
                         <div className={styles.usernameSection}>
-                            <h2>WELCOME, {player.username}</h2>
+                            <h2>{player.username}</h2>
                             <button className={styles.editBtn} onClick={() => setIsEditing(true)}>
                                 ✎﹏﹏﹏﹏
                             </button>
