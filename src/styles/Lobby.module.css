@@ -3,8 +3,11 @@
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: 2rem 1rem 6rem;
-    position: relative;
+    padding: 2rem 1rem 7rem;
+    color: black;
+    overflow-x: hidden;
+    background:  linear-gradient(180deg, #ff7300, #ff3d00, #8c0000);
+    background-size: 200% 200%;
 }
 
 .header {
@@ -17,67 +20,106 @@
 }
 
 .title {
-    font-size: 2.2rem;
+    color: #ffef3a;
+    text-shadow: 4px 4px 0 #ff3131, 7px 7px 0 #000;
+    font-size: 6.2rem;
     font-weight: 800;
     font-family: 'Bangers', sans-serif;
+    letter-spacing: 1rem;
 }
 
 .username {
-    font-size: 1.1rem;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    border: 2px solid #ffef3a;
+    text-shadow: 1px 1px 2px #000;
 }
 
 .gamesSection {
     width: 100%;
     max-width: 600px;
-    border-radius: 1rem;
+    border-radius: 1rem;  
     padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 3px solid #ffef3a;
+    border-radius: 1rem;
+    background: rgba(255, 204, 77, 0.2);
+    box-shadow: 0 8px 0 #ff3131, 0 8px 25px rgba(0, 0, 0, 0.5);
     margin-bottom: 4rem;
+    backdrop-filter: blur(3px);
 }
 
 .sectionTitle {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     margin-bottom: 1.5rem;
+    color: #fff6d8;
+    text-shadow: 3px 3px 0 #ff3131;
 }
 
 .gamesList {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.2rem;
 }
 
 .gameItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 1rem;
+    background: #ffe066;
+    color: #2b0000;
+    border: 3px solid #ff3131;
+    box-shadow: 0 4px 0 #b51a00;
+    padding: 0.9rem 1rem;
     border-radius: 0.8rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gameItem:hover {
+    transform: rotate(-1deg) scale(1.03);
+    box-shadow: 0 6px 0 #ff0000;
 }
 
 .gameName {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: 500;
 }
 
 .joinBtn {
-    background: #4f46e5;
+    background: #ff3131;
     color: white;
-    border: none;
+    border: 3px solid #000;
     border-radius: 0.6rem;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.05rem;
     cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 0 4px 0 #000;
+}
+
+.joinBtn:hover {
+    background: #ff5555;
+    transform: translateY(-2px);
 }
 
 .noGames {
+    margin-top: 3rem;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.3rem;
+    color: #fff6d8;
+    text-shadow: 2px 2px 0 #ff3131;
 }
 
 .arrow {
-    margin-top: 0.5rem;
-    font-size: 1.5rem;
+    display: block;
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 2rem;
 }
 
 .createSection {
@@ -85,9 +127,54 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 1.5rem;
-    box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.08);
+    padding: 1.2rem 0;
+    background: #3b3a3a;
+    box-shadow: 0 -5px 0 #ff3131;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-top: 4px solid #ffef3a;
+    backdrop-filter: blur(6px);
+}
+
+.createForm {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 0.8rem;
+}
+
+.input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border: 1px solid #000;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #fff6d8;
+    outline: none;
+    color: #2b0000;
+}
+
+.input::placeholder {
+    color: #7a5a00;
+}
+
+.createBtn {
+    background: #ff3131;
+    color: white;
+    border: 3px solid #000;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1.4rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.05rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #000;
+    transition: transform 0.1s
+}
+
+.createBtn:hover {
+    transform: translateY(-2px);
+    background: #ff5555;
 }

@@ -102,7 +102,7 @@ export default function LobbyPage(){
 
             <section className={styles.createSection}>
                 <h2 className={styles.sectionTitle}>Create a Game Lobby</h2>
-                <form onSubmit={handleCreateGame} className="create-game-form">
+                <form onSubmit={handleCreateGame} className={styles.createForm}>
                      <input 
                         type="text" 
                         placeholder="Game Name" 
