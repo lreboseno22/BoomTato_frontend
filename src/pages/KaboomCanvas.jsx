@@ -72,7 +72,7 @@ export default function KaboomCanvas() {
 
     const renderPlayers = (state) => {
         if (!state || !state.players) return;
-      console.log("[CLIENT] Rendering players:", state.players);
+      // console.log("[CLIENT] Rendering players:", state.players);
 
       Object.entries(state.players).forEach(([id, pos]) => {
         if (!playerSprites.current[id]) {
@@ -236,6 +236,12 @@ export default function KaboomCanvas() {
 
     const handleGameEnded = async ({ winner, loser, gameId }) => {
       const k = kRef.current;
+      if(!k) return;
+
+      const storedPlayer = JSON.parse(localStorage.getItem("player"));
+      const playerId = storedPlayer?._id;
+
+      const isWinner = playerId === winner;
 
       k.add([
         k.rect(k.width(), k.height()),
@@ -245,7 +251,7 @@ export default function KaboomCanvas() {
       ]);
 
       k.add([
-        k.text(`GAME OVER \nWinner: ${winner} \nLoser: ${loser}`, {
+        k.text(isWinner ? "YOU WIN!" : "YOU LOSE!", {
           size:36,
           align: "center",
         }),
