@@ -5,6 +5,46 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    color: white;
+    background-color: black;
+}
+
+.explosionLeft, 
+.explosionRight {
+    position: absolute;
+    width: 250px;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.explosionTop,
+.explosionBottom {
+    position: absolute;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.explosionLeft {
+    left: -10px;
+    bottom: 10%;
+}
+
+.explosionRight {
+    right: -10px;
+    top: 10%;
+    transform: scaleX(-1);
+}
+
+.explosionTop {
+    left: -0.3px;
+    top: 5%;
+}
+
+.explosionBottom {
+    right: -1px;
+    bottom: 10%;
 }
 
 .gameContainer {
@@ -13,21 +53,29 @@
     padding: 2rem 3rem;
     border-radius: 20px;
     text-align: center;
-    min-width: 320px;
+    min-width: 520px;
+    min-height: 520px;
+    background: rgba(209, 96, 3, 0.871);
 }
 
 .title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 5rem;
+    letter-spacing: 1rem;
+    margin-bottom: 3rem;
+    color: #ffcf40;
+    text-shadow: 8px 2px 8px #000000;
 }
 
 .status {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
+    font-size: 2.3rem;
+    margin-bottom: 2rem;
 }
 
 .playersTitle {
+    font-size: 1.8rem;
     margin-top: 1rem;
+    color: #ffeaa7;
+    margin-bottom: 2.3rem;
 }
 
 .playersList {
@@ -37,13 +85,46 @@
 }
 
 .playerItem {
-    font-size: 1.1rem;
-    padding: 0.3rem;
-    margin-bottom: 0.4rem;
+    font-size: 2.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #f1f2f6;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
 }
 
 .actions {
     display: flex;
     justify-content: center;
     gap: 1rem;
+}
+
+.actionBtn,
+.startBtn {
+    background: #d8130c;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: bold;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 0 4px 0 #000;
+    border: 3px solid #000;
+    transition: transform 0.1s;
+}
+
+.actionBtn:hover {
+    background: #ff5555;
+    transform: translateY(-2px);
+}
+
+.startBtn {
+    background: green;
+}
+
+.startBtn:hover {
+    background: rgb(68, 169, 43);
+    transform: translateY(-2px);
 }

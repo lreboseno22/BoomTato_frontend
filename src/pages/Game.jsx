@@ -116,6 +116,11 @@ export default function GamePage(){
 
     return (
         <div className={styles.gamePage}>
+            <img src="/assets/explosiongif.gif" alt="explosion" className={styles.explosionLeft} />
+            <img src="/assets/explosiongif.gif" alt="explosion" className={styles.explosionRight} />
+            <img src="/assets/explosiongif.gif" alt="explosion" className={styles.explosionTop} />
+            <img src="/assets/explosiongif.gif" alt="explosion" className={styles.explosionBottom} />
+
             <div className={styles.gameContainer}>
                 <h1 className={styles.title}>{game.name}</h1>
                 <h2 className={styles.status}>Status: {game.status}</h2>
@@ -135,7 +140,7 @@ export default function GamePage(){
                 )}
 
                 {isHost && game.status === "waiting" && game.players.length >=2 && (
-                    <button className={styles.startButton} onClick={handleStartGame}>Start Game</button>
+                    <button className={styles.startBtn} onClick={handleStartGame}>Start Game</button>
                 )}
                 </div>
             </div>
