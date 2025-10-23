@@ -82,7 +82,7 @@ export default function LobbyPage(){
 
 
             <section className={styles.gamesSection}>
-                <h2>Available Games</h2>
+                <h2 className={styles.sectionTitle}>Available Games</h2>
                 <div className={styles.gamesList}>
                     {games.length > 0 ? (
                         games.map((g) => (
@@ -92,7 +92,7 @@ export default function LobbyPage(){
                             </div>
                         ))
                     ) : (
-                        <div>
+                        <div className={styles.noGames}>
                             <p>No games available</p>
                             <p className={styles.arrow}>Try creating one below!</p>
                         </div>
