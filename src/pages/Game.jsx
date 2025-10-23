@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import socket from "../socket.js";
+import styles from "../styles/Game.module.css";
 
 export default function GamePage(){
     const { id } = useParams();
@@ -114,26 +115,29 @@ export default function GamePage(){
     const isHost = player && game.host && player._id === game.host._id;
 
     return (
-        <div className="game-page">
-            <h1>{game.name}</h1>
-            <p>Status: {game.status}</p>
-            <h3>Players:</h3>
-            <ul>
-                {Array.isArray(game.players) && game.players.map((p) => (
-                    <li key={p._id}>{p.username}</li>
-                ))}
-            </ul>
+        <div className={styles.gamePage}>
+            <div className={styles.gameContainer}>
+                <h1 className={styles.title}>{game.name}</h1>
+                <h2 className={styles.status}>Status: {game.status}</h2>
 
-            <div className="game-actions">
-                {isHost ? (
-                    <button onClick={handleEndGame}>End Game</button>
+                <h3 className={styles.playersTitle}>Players:</h3>
+                <ul className={styles.playersList}>
+                    {Array.isArray(game.players) && game.players.map((p) => (
+                    <li key={p._id} className={styles.playerItem}>{p.username}</li>
+                ))}
+                </ul>
+
+                <div className={styles.actions}>
+                    {isHost ? (
+                    <button className={styles.actionBtn} onClick={handleEndGame}>End Game</button>
                 ) : (
-                    <button onClick={handleLeaveGame}>Leave Game</button>
+                    <button className={styles.actionBtn} onClick={handleLeaveGame}>Leave Game</button>
                 )}
 
                 {isHost && game.status === "waiting" && game.players.length >=2 && (
-                    <button onClick={handleStartGame}>Start Game</button>
+                    <button className={styles.startButton} onClick={handleStartGame}>Start Game</button>
                 )}
+                </div>
             </div>
         </div>
     )
