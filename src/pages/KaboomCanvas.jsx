@@ -40,7 +40,7 @@ export default function KaboomCanvas() {
       sliceX: 7,
       sliceY: 1,
       anims: {
-        boom: { from: 0, to: 6, speed: 12, loop: false }
+        boom: { from: 0, to: 6, speed: 0.05, loop: false }
       }
     });
 
@@ -182,19 +182,38 @@ export default function KaboomCanvas() {
       const explosion = k.add([
         k.sprite("explosion", { anim: "boom" }),
         k.pos(loserSprite.pos.x, loserSprite.pos.y),
+        k.scale(1),
         k.anchor("center"),
         k.z(150),
       ])
 
       if(explosion.play) explosion.play("boom");
 
+      // animating the explosion / make explosion less choppy (by growing in size)
+      k.tween(
+        explosion.scale, //starting value
+        k.vec2(1.4, 1.4), // end value
+        0.35, // duration
+        (val) => (explosion.scale = val), // on each frame we want to update the explosions scale
+        k.easings.easeOutQuad // ease method to start fast but slow down at the end = smooth
+      );
+
+      // animating the explosion as it fades out
+      k.tween(
+        1,  // opacity at the start
+        0,  // opacity at the end
+        0.35, 
+        (val) => (explosion.opacity = val),
+        k.easings.linear // ease evenly
+      );
+
       loserSprite.destroy();
       delete playerSprites.current[loserId];
 
       let animInfo = spriteDef?.anims?.boom || spriteDef?.anims?.explode || null;
       const frames = 7; // sheet sliceX
-      const fps = (animInfo && animInfo.speed) ? animInfo.speed : 12;
-      const duration = frames / fps; // seconds
+      const fps = (animInfo && animInfo.speed) ? animInfo.speed : 0.1;
+      const duration = frames * fps; // seconds
 
       k.wait(duration, () => {
         try {
