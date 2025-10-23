@@ -147,33 +147,104 @@ export default function KaboomCanvas() {
 
     }
 
+    k.loadSprite("explosion", "/assets/explosionsheet.png", {
+      sliceX: 7,
+      sliceY: 1,
+      anims: {
+        boom: { from: 0, to: 6, speed: 0.1, loop: false }
+      }
+    });
+
+    const handlePlayerExploded = ({ loserId }) => {
+      console.log("[CLIENT] Player exploded:", loserId);
+
+      const k = kRef.current;
+      const loserSprite = playerSprites.current[loserId];
+
+      if(!loserSprite) return;
+
+      const explosion = k.add([
+        k.sprite("explosion"),
+        k.pos(loserSprite.pos.x, loserSprite.pos.y),
+        k.anchor("center"),
+        k.z(100)
+      ])
+
+      explosion.play("boom");
+
+      loserSprite.destroy();
+      delete playerSprites.current[loserId];
+
+      explosion.onAnimEnd(() => explosion.destroy())
+    }
+
     const handleGameStarted = ({ gameId, gameState }) => {
         console.log("[CLIENT] Game started event received");
         renderPlayers(gameState);
     }
 
     const handleGameEnded = async ({ winner, loser, gameId }) => {
-        alert(`Game ended! Winner: ${winner} and Loser: ${loser}`);
+      const k = kRef.current;
 
+      k.add([
+        k.rect(k.width(), k.height()),
+        k.color(0, 0, 0),
+        k.opacity(0.5),
+        k.z(150),
+      ]);
+
+      const gameOverText = k.add([
+        k.text(`GAME OVER \nWinner: ${winner} \nLoser: ${loser}`, {
+          size:36,
+          align: "center",
+        }),
+        k.pos(k.width() / 2, k.height() / 2),
+        k.anchor("center"),
+        k.z(200),
+      ])
+
+      const button = k.add([
+        k.rect(220, 60, { radius: 12 }),
+        k.pos(k.width() / 2, k.height() / 2 + 80),
+        k.color(0, 120, 255),
+        k.area(),
+        k.anchor("center"),
+        k.outline(4, k.rgb(255, 255, 255)),
+        k.z(200),
+      ])
+
+      const buttonText = k.add([
+        k.text("Return to Lobby", { size: 24 }),
+        k.pos(k.width() / 2, k.height() / 2 + 80),
+        k.anchor("center"),
+        k.z(201),
+      ]);
+
+      button.onHover(() => (button.color = k.rgb(100, 180, 255)));
+      button.onHoverEnd(() => (button.color = k.rgb(0, 120, 255)));
+
+      button.onClick(async () => {
         try {
-        // Update MongoDB status
-        const res = await fetch(`http://localhost:3000/api/games/${gameId}/end`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        });
+          // Update MongoDB status
+          const res = await fetch(`http://localhost:3000/api/games/${gameId}/end`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          });
 
-        if (!res.ok) throw new Error("Failed to update game status");
+          if (!res.ok) throw new Error("Failed to update game status");
 
-        console.log(`[CLIENT] Game ${gameId} status updated to finished`);
-        } catch (err) {
+          console.log(`[CLIENT] Game ${gameId} status updated to finished`);
+          } catch (err) {
             console.error(err)
-        } finally {
+          } finally {
             nav("/lobby");
-        }
+          }
+      })
     }
 
     socket.on("stateUpdated", handleStateUpdate);
     socket.on("timerUpdate", handleTimerUpdate);
+    socket.on("playerExploded", handlePlayerExploded);
     socket.on("gameStarted", handleGameStarted);
     socket.on("gameEnded", handleGameEnded);
 
@@ -189,6 +260,7 @@ export default function KaboomCanvas() {
       socket.off("connect", registerAndJoin);
       socket.off("stateUpdated", handleStateUpdate);
       socket.off("timerUpdate", handleTimerUpdate);
+      socket.off("playerExploded", handlePlayerExploded);
       socket.off("gameStarted", handleGameStarted)
       socket.off("gameEnded", handleGameEnded);
     };
