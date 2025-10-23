@@ -11,6 +11,7 @@ export default function KaboomCanvas() {
   const kRef = useRef(null); // Ref to store Kaboom instance
   const playerSprites = useRef({}); // Ref to store each player's sprite by their ID
   const timerRef = useRef(null);
+  const handleGameEndedPendingRef = useRef(null);
   const nav = useNavigate();
 
   // Ensure canvas can capture keyboard input
@@ -34,6 +35,15 @@ export default function KaboomCanvas() {
     console.log("[CLIENT] Kaboom initialized");
 
     k.loadSprite("background", "/assets/otherbgimg.jpg");
+
+    k.loadSprite("explosion", "/assets/explosionsheet.png", {
+      sliceX: 7,
+      sliceY: 1,
+      anims: {
+        boom: { from: 0, to: 6, speed: 12, loop: false }
+      }
+    });
+
     k.add([
       k.sprite("background"),
       k.pos(0, 0),
@@ -147,35 +157,57 @@ export default function KaboomCanvas() {
 
     }
 
-    k.loadSprite("explosion", "/assets/explosionsheet.png", {
-      sliceX: 7,
-      sliceY: 1,
-      anims: {
-        boom: { from: 0, to: 6, speed: 0.1, loop: false }
-      }
-    });
-
     const handlePlayerExploded = ({ loserId }) => {
       console.log("[CLIENT] Player exploded:", loserId);
 
       const k = kRef.current;
+      if(!k) return;
+
       const loserSprite = playerSprites.current[loserId];
 
       if(!loserSprite) return;
 
+      const spriteDef = k.getSprite("explosion")
+      if (!spriteDef) {
+        console.warn("[CLIENT] Explosion sprite not loaded yet. Skipping animation");
+        loserSprite.destroy();
+        delete playerSprites.current[loserId];
+        if (handleGameEndedPendingRef.current) {
+          handleGameEndedPendingRef.current();
+          handleGameEndedPendingRef.current = null;
+        }
+        return;
+      }
+
       const explosion = k.add([
-        k.sprite("explosion"),
+        k.sprite("explosion", { anim: "boom" }),
         k.pos(loserSprite.pos.x, loserSprite.pos.y),
         k.anchor("center"),
-        k.z(100)
+        k.z(150),
       ])
 
-      explosion.play("boom");
+      if(explosion.play) explosion.play("boom");
 
       loserSprite.destroy();
       delete playerSprites.current[loserId];
 
-      explosion.onAnimEnd(() => explosion.destroy())
+      let animInfo = spriteDef?.anims?.boom || spriteDef?.anims?.explode || null;
+      const frames = 7; // sheet sliceX
+      const fps = (animInfo && animInfo.speed) ? animInfo.speed : 12;
+      const duration = frames / fps; // seconds
+
+      k.wait(duration, () => {
+        try {
+          explosion.destroy();
+        } catch (err) {
+          
+        }
+        if(handleGameEndedPendingRef.current){
+          handleGameEndedPendingRef.current();
+          handleGameEndedPendingRef.current = null;
+        }
+      })
+
     }
 
     const handleGameStarted = ({ gameId, gameState }) => {
@@ -193,7 +225,7 @@ export default function KaboomCanvas() {
         k.z(150),
       ]);
 
-      const gameOverText = k.add([
+      k.add([
         k.text(`GAME OVER \nWinner: ${winner} \nLoser: ${loser}`, {
           size:36,
           align: "center",
@@ -213,7 +245,7 @@ export default function KaboomCanvas() {
         k.z(200),
       ])
 
-      const buttonText = k.add([
+      k.add([
         k.text("Return to Lobby", { size: 24 }),
         k.pos(k.width() / 2, k.height() / 2 + 80),
         k.anchor("center"),
@@ -246,7 +278,10 @@ export default function KaboomCanvas() {
     socket.on("timerUpdate", handleTimerUpdate);
     socket.on("playerExploded", handlePlayerExploded);
     socket.on("gameStarted", handleGameStarted);
-    socket.on("gameEnded", handleGameEnded);
+
+    socket.on("gameEnded", ({ winner, loser, gameId }) => {
+      handleGameEndedPendingRef.current = () => handleGameEnded({ winner, loser, gameId });
+    });
 
     setTimeout(() => {
       socket.emit("requestCurrentState", gameId, (state) => {
@@ -262,7 +297,7 @@ export default function KaboomCanvas() {
       socket.off("timerUpdate", handleTimerUpdate);
       socket.off("playerExploded", handlePlayerExploded);
       socket.off("gameStarted", handleGameStarted)
-      socket.off("gameEnded", handleGameEnded);
+      socket.off("gameEnded");
     };
   }, [gameId, playerId]);
 
