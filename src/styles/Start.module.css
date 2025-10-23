@@ -5,14 +5,14 @@
     justify-content: center;
     min-height: 100vh;
     text-align: center;
-    background: linear-gradient(270deg, #eb7711, #db6511, #db530a);
+    background: linear-gradient(270deg, #ec9717, #f97316, #de550c);
     overflow: hidden;
 }
 
 .gameTitle {
     font-family: "Bangers", sans-serif;
     letter-spacing: 1.2rem;
-    font-size: 5rem;
+    font-size: 9rem;
     font-weight: 800;
     margin-bottom: 10rem;
     text-shadow: 4px 4px 0 #ff3131, 8px 8px 0 #ffd700;
@@ -20,25 +20,72 @@
 
 
 .container {
+    width: 600px;
     display: flex;
+    justify-content: space-between;
+    background: linear-gradient(170deg, #ffd700, #db530a);
     gap: 4rem;
     padding: 2rem 3rem;
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(234, 42, 8, 0.553);
-    backdrop-filter: blur(4px);
+    box-shadow: 0 0 25px rgb(204, 43, 18);
+    backdrop-filter: blur(2px);
 }
 
 .userInfo {
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
+.userInfo h2 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
 .usernameSection {
-    display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 1rem;
+}
+
+.editBtn {
+  background: transparent;
+  padding: 6px 4px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 25px;
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+.editBtn:hover {
+    display: inline-block;
+    transform: scaleX(-1);
+}
+
+.editForm {
+    align-items: center;
+}
+
+.editForm input {
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 1rem;
+    margin: 1.5rem;
+}
+
+.editForm button {
+    padding: 0.5rem 1rem;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0.2rem;
 }
 
 .actionsContainer {
@@ -68,4 +115,35 @@
 .confirm {
     background: red;
     color: white;
+}
+
+.playBtn,
+.deleteBtn,
+.logoutBtn {
+    padding: 1rem 2rem;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.playBtn:hover {
+    background: #21b21c;
+    color: white;
+    transform: scale(1.05);
+}
+
+.deleteBtn:hover {
+    background: #ff3131;
+    color: black;
+    transform: scale(1.05);
+}
+
+.logoutBtn:hover {
+    background-color: rgb(198, 181, 23);
+    color: white;
+    transform: scale(1.05);
 }

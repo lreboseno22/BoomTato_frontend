@@ -73,9 +73,9 @@ export default function ProfilePage(){
                 <div className={styles.userInfo}>
                     {!isEditing ? (
                         <div className={styles.usernameSection}>
-                            <h2>Welcome {player.username}</h2>
+                            <h2>WELCOME, {player.username}</h2>
                             <button className={styles.editBtn} onClick={() => setIsEditing(true)}>
-                                Edit
+                                ✎﹏﹏﹏﹏
                             </button>
                         </div>
                     ) : (
@@ -86,10 +86,12 @@ export default function ProfilePage(){
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
-                            <button type="submit">Save</button>
+                            <div>
+                                <button type="submit">Save</button>
                             <button type="button" onClick={() => setIsEditing(false)}>
                                 Cancel
                             </button>
+                            </div> 
                         </form>
                     )}
 
