@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import socket from "../socket";
+import styles from "../styles/Lobby.module.css";
 
 export default function LobbyPage(){
     const [player, setPlayer] = useState(null);
@@ -73,30 +74,47 @@ export default function LobbyPage(){
     }
     
     return (
-        <div className="lobby-page">
-            <h1>Welcome to the Lobby, {player?.username}</h1>
-            <div className="lobby-container">
-                <div className="join-lobby-container">
-                    <h2>Available Games</h2>
-                    <ul>
-                        {games.length > 0 ? (
-                            games.map((g) => (
-                                <li key={g._id}>
-                                    {g.name}
-                                    <button onClick={() => handleJoinGame(g._id)}>Join</button>
-                                </li>
-                            ))
-                        ) : (
+        <div className={styles.lobbyPage}>
+            <header className={styles.header}>
+                <h1 className={styles.title}>BOOMTATO</h1>
+                <span className={styles.username}>Player: {player?.username}</span>
+            </header>
+
+
+            <section className={styles.gamesSection}>
+                <h2>Available Games</h2>
+                <div className={styles.gamesList}>
+                    {games.length > 0 ? (
+                        games.map((g) => (
+                            <div key={g._id} className={styles.gameItem}>
+                                <span className={styles.gameName}>{g.name}</span>
+                                <button onClick={() => handleJoinGame(g._id)} className={styles.joinBtn}>Join</button>
+                            </div>
+                        ))
+                    ) : (
+                        <div>
                             <p>No games available</p>
-                        )}
-                    </ul>
-                </div>  
-                <h2>Create a game lobby</h2>
+                            <p className={styles.arrow}>Try creating one below!</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            <section className={styles.createSection}>
+                <h2 className={styles.sectionTitle}>Create a Game Lobby</h2>
                 <form onSubmit={handleCreateGame} className="create-game-form">
-                    <input type="text" placeholder="Game Name" value={gameName} onChange={(e) => setGameName(e.target.value)} required />
-                    <button type="submit">Create</button>
-                </form>
-            </div>
+                     <input 
+                        type="text" 
+                        placeholder="Game Name" 
+                        value={gameName} onChange={(e) => setGameName(e.target.value)} 
+                        required 
+                        className={styles.input}
+                    />
+                    <button type="submit" className={styles.createBtn}>
+                        Create
+                    </button>
+                    </form>
+            </section>
         </div>
     )
 }
