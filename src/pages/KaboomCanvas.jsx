@@ -2,6 +2,7 @@ import kaboom from "kaboom";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import socket from "../socket";
+import styles from "../styles/Kaboom.module.css"
 
 export default function KaboomCanvas() {
   const { id } = useParams();
@@ -327,7 +328,7 @@ export default function KaboomCanvas() {
   }, [gameId, playerId]);
 
   return (
-    <div className="kaboom-page">
+    <div className={styles.kaboomPage}>
       <canvas id="kaboomCanvas" tabIndex="0"></canvas>
     </div>
   );
