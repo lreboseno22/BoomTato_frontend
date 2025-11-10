@@ -10,8 +10,7 @@ import styles from "../styles/Start.module.css";
  * From here the user can update name, delete their user, logout or click play which will navigate them to the LobbyPage.
  */
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3000/api/players";
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/players` || "http://localhost:3000/api/players";
 
 export default function ProfilePage() {
   const { id } = useParams();
