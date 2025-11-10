@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import socket from "../socket";
+import { GAME_API } from "../utils/api";
 import styles from "../styles/Lobby.module.css";
 
 /**
@@ -52,7 +53,7 @@ export default function LobbyPage() {
   // Fetch all games currenlty in "waiting" state, used to populate the lobby list.
   const getGames = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/games/waiting");
+      const res = await axios.get(`${GAME_API}/waiting`);
       setGames(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
@@ -74,7 +75,7 @@ export default function LobbyPage() {
     if (!player) return alert("You must be logged in to join a game");
 
     try {
-      await axios.patch(`http://localhost:3000/api/games/${gameId}/join`, {
+      await axios.patch(`${GAME_API}/${gameId}/join`, {
         playerId: player._id,
       });
       socket.emit("joinGameRoom", gameId);

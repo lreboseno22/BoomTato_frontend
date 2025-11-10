@@ -3,6 +3,7 @@ import { useState } from "react";
 import LoginModal from "../components/LoginModal";
 import RegisterModal from "../components/RegisterModal";
 import axios from "axios";
+import { PLAYER_API } from "../utils/api";
 import styles from "../styles/Home.module.css";
 
 /**
@@ -11,10 +12,6 @@ import styles from "../styles/Home.module.css";
  * This page serves as the entry point for the BOOMTATO app.
  * Allows players to register or log in, and navigates them to their profile upon successful authentication.
  */
-
-// Define a base API URL for cleaner and maintainable requests
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/players` || "http://localhost:3000/api/players";
-
 export default function HomePage() {
   // State to toggle login and registration modals
   const [showLogin, setShowLogin] = useState(false);
@@ -32,7 +29,7 @@ export default function HomePage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${API_BASE_URL}/login`, {
+      const res = await axios.post(`${PLAYER_API}/login`, {
         username,
         password,
       });
@@ -53,7 +50,7 @@ export default function HomePage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${API_BASE_URL}/register`, {
+      const res = await axios.post(`${PLAYER_API}/register`, {
         username,
         password,
       });

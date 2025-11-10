@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import socket from "../socket.js";
+import { GAME_API } from "../utils/api";
 import styles from "../styles/Game.module.css";
 
 /**
@@ -11,7 +12,6 @@ import styles from "../styles/Game.module.css";
  * Displays current players, allows the host to start or end the game
  * As well as managing real-time updates using socket.io
  */
-
 export default function GamePage() {
   const { id } = useParams();
   const [game, setGame] = useState({ players: [] }); // make sure players is always an array in init game state
@@ -91,7 +91,7 @@ export default function GamePage() {
   // Fetch current game details from backend
   const getGame = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/games/${id}`);
+      const res = await axios.get(`${GAME_API}/${id}`);
       // Ensure players field is always a valid array
       setGame({
         ...res.data,
@@ -105,7 +105,7 @@ export default function GamePage() {
   // HOST ACTION: Start the game -> tells backend to mark the game as started as well as emit to notify all connected players
   const handleStartGame = async () => {
     try {
-      await axios.put(`http://localhost:3000/api/games/${id}/start`);
+      await axios.put(`${GAME_API}/${id}/start`);
       socket.emit("startGame", id);
     } catch (err) {
       console.error(err);
@@ -116,7 +116,7 @@ export default function GamePage() {
   const handleLeaveGame = async () => {
     if (!player) return alert("You must be logged in");
     try {
-      await axios.patch(`http://localhost:3000/api/games/${id}/leave`, {
+      await axios.patch(`${GAME_API}/${id}/leave`, {
         playerId: player._id,
       });
       nav("/lobby");
@@ -135,7 +135,7 @@ export default function GamePage() {
     if (!confirmEnd) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/games/${id}`);
+      await axios.delete(`${GAME_API}/${id}`);
       nav("/lobby");
     } catch (err) {
       console.error(err);

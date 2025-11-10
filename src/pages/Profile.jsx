@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { PLAYER_API } from "../utils/api";
 import styles from "../styles/Start.module.css";
 
 /**
@@ -9,9 +10,6 @@ import styles from "../styles/Start.module.css";
  * This page is the main user's profile/starting page after they login or register.
  * From here the user can update name, delete their user, logout or click play which will navigate them to the LobbyPage.
  */
-
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/players` || "http://localhost:3000/api/players";
-
 export default function ProfilePage() {
   const { id } = useParams();
   const [player, setPlayer] = useState(null);
@@ -35,7 +33,7 @@ export default function ProfilePage() {
 
   const fetchPlayer = async (playerId) => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/${playerId}`);
+      const res = await axios.get(`${PLAYER_API}/${playerId}`);
       setPlayer(res.data);
       setUsername(res.data.username);
     } catch (err) {
@@ -47,7 +45,7 @@ export default function ProfilePage() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`${API_BASE_URL}/${id}`, {
+      const res = await axios.put(`${PLAYER_API}/${id}`, {
         username,
       });
       setPlayer(res.data);
@@ -63,7 +61,7 @@ export default function ProfilePage() {
     if (!window.confirm("Are you sure you want to delete your profile?"))
       return;
     try {
-      await axios.delete(`${API_BASE_URL}/${id}`);
+      await axios.delete(`${PLAYER_API}/${id}`);
       localStorage.removeItem("player"); // clear from storage
       nav("/"); // Go back Home
     } catch (err) {
