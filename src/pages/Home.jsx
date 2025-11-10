@@ -13,8 +13,7 @@ import styles from "../styles/Home.module.css";
  */
 
 // Define a base API URL for cleaner and maintainable requests
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3000/api/players";
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/players` || "http://localhost:3000/api/players";
 
 export default function HomePage() {
   // State to toggle login and registration modals
