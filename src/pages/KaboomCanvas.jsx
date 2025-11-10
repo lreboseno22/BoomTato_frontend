@@ -2,6 +2,7 @@ import kaboom from "kaboom";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import socket from "../socket";
+import { GAME_API } from "../utils/api";
 import styles from "../styles/Kaboom.module.css";
 
 /**
@@ -315,7 +316,7 @@ export default function KaboomCanvas() {
       button.onClick(async () => {
         try {
           // Update MongoDB status
-          const res = await fetch(`http://localhost:3000/api/games/${gameId}/end`, {
+          const res = await fetch(`${GAME_API}/${gameId}/end`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           });
