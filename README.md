@@ -4,8 +4,8 @@
 
 Players can register, log in, create or join game rooms, and compete to **pass the explosive potato** before it blows up!
 
-## Screenshots
-<!-- ![Gameplay Screenshot](./public/gameplay.gif) -->
+## Videos
+![Demo](https://youtu.be/f1bvdBxaThg)
 
 ---
 
@@ -17,7 +17,7 @@ Players can register, log in, create or join game rooms, and compete to **pass t
 ---
 
 ## Features
-- **Real-Time Multiplayer:** Built with **Socket.IO to synhronize player actions across all connected clients.
+- **Real-Time Multiplayer:** Built with **Socket.IO** to synhronize player actions across all connected clients.
 - **Game Lobby System:**
     - Players can **create** **join** and **leave** lobbies.
     - The host can start the game once two players are connected.
@@ -104,6 +104,7 @@ CORS_ORIGIN=https://your-frontend-url.com
 ```bash
 npm run dev
 ```
+
 
 ## BOOMTato Backend Here!!
 Repo: https://github.com/lreboseno22/BoomTato_backend
