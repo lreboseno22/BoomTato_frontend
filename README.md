@@ -4,15 +4,8 @@
 
 Players can register, log in, create or join game rooms, and compete to **pass the explosive potato** before it blows up!
 
-## Videos
+## Videos and Demo
 [![Watch the demo](https://img.youtube.com/vi/f1bvdBxaThg/0.jpg)](https://youtu.be/f1bvdBxaThg)
-
----
-
-## Live Demo
-
-- Frontend: 
-- Backend API: 
 
 ---
 
